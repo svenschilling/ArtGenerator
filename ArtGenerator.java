@@ -138,7 +138,7 @@ public class ArtGenerator extends Application {
         });
 
 
-        //! open node editor
+        //! work on node editor -> TODO.md
         buttonNodeEditor.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -158,9 +158,9 @@ public class ArtGenerator extends Application {
         // stage settings
         primaryStage.setTitle("algorithm prototype");
               
-        Scene scene = new Scene(root, 600, 600);
+        Scene scene = new Scene(root, 800, 600);
         
-
+        //! put Region into scrollPane to specify region for tilepane
         //! setup scrollpane that it format the images around the whole horizontal length
         scrollPane.setPrefWidth(400);
         System.out.println(scrollPane.widthProperty().getValue());
@@ -183,7 +183,7 @@ public class ArtGenerator extends Application {
         // root elements     
         root.setTop(hBox);
         root.setCenter(scrollPane);
-
+        
 
         
     }
