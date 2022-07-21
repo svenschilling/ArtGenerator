@@ -1,6 +1,5 @@
 +  scan svg path with javafx 2d shapes
-+  user can enter a cell size which is used when saving the document
-
++ possibility to move around created images with "wasd" or arrow keys and with enter pressed the images maximises
 + doubleclick on selected art to maximes it
     + have an clickable x to return to overview
 + textfield can only take integer
@@ -11,6 +10,8 @@
     - save selected items as single images
         + define resolution for them to export those
     - edit nodes where those shapes center around
+    - folder where user can put b&w images into that will get through the process of making new shapoes with them (svg / png)
+
 
 
 ### generate algorithm
@@ -53,7 +54,6 @@ https://mavenlibs.com/jar/file/org.apache.xmlgraphics/batik-svggen
 
 ref:
 https://80.lv/articles/brainstorm-an-easier-way-to-come-up-with-ideas/
-https://slick.ninjacave.com/javadoc/  !deprecated
 https://libgdx.com/
 https://stackoverflow.com/questions/33961606/javafx-how-to-drag-object-along-given-svg-path-like-a-slider
 

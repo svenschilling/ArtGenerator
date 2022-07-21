@@ -7,10 +7,12 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -25,28 +27,45 @@ import java.io.File;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 
 // shortcuts
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 
 
 public class ArtGenerator extends Application {
+
     ArrayList<Shape> makeShapes;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // node attributes
+        double minWidthWindow = 800;
+        double minHeightWindow = 600;
+        int tileWidth = 50;
+        int tileHeight = 50;
+        int tileHgap = 5;
+        int tileVgap = 5;
+
         // primaryStage elements
         BorderPane root = new BorderPane();
         HBox hBox = new HBox();
         TilePane tilePane = new TilePane();
         TextField textField = new TextField();
         ScrollPane scrollPane = new ScrollPane(tilePane);
+        Label statusLabel = new Label();
+
         // nodeEditorStage
         Stage nodeEditorStage = new Stage();
+        StackPane nodeEditorStackPane = new StackPane();
+        HBox nodeEditorHBox = new HBox();
+        //! set size to stackpane
+        Canvas nodeEditorCanvas = new Canvas();
 
         // hBox elements primaryStage
         Button buttonGenerateAdd = new Button("generate add");
@@ -58,11 +77,12 @@ public class ArtGenerator extends Application {
         // hBox elements nodeEditorStage
         Button buttonBackToMain = new Button("to generator");
 
-        double minWidthWindow = 800;
-        double minHeightWindow = 600;
-        int tileWidth = 50;
-        int tileHeight = 50;
-        
+        //! test setall to just overwrite old hbox
+        nodeEditorHBox.getChildren().addAll(buttonBackToMain);
+
+        //! build a little status bar (ex. label) that show infos like file_xy got saved or you exceeded images creation (beyond 300) 
+        //! make it green plus success text (like saved image namedxy at c:/ ..) or red with error message
+
         hBox.getChildren().addAll(textField,buttonGenerateNew,buttonGenerateAdd,buttonSaveImages,buttonDeleteSelected,buttonReset,buttonNodeEditor);
             
         //! build implementation of deleteSelected buttons
@@ -109,18 +129,19 @@ public class ArtGenerator extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 int input;
-                /*
-                // only reset when its not empty array and tilepane from shapes
-                if(!makeShapes.isEmpty()) {
-                    makeShapes.clear();
-                    tilePane.getChildren().clear();
-                }
-                */
                 
+                
+                // if there is already shapes then fucking empty it 
+                // else create new shape 
+                if(tilePane.getChildren() == null) {
+                    System.out.println("no childs atm ..");
+                }
+
                 try {
                     input = Integer.parseInt(textField.getText());    
                     makeShapes = createShape(input);
-                    tilePane.getChildren().addAll(makeShapes);
+                    tilePane.getChildren().addAll(makeShapes);         
+
                 } catch (Exception e) {
                     e.getStackTrace();
                 }
@@ -131,6 +152,7 @@ public class ArtGenerator extends Application {
         buttonSaveImages.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                //! maybe here lies the problem ?!
                 WritableImage image = tilePane.snapshot(new SnapshotParameters(), null);
                 
                 LocalDateTime localDateTime = LocalDateTime.now();
@@ -160,7 +182,13 @@ public class ArtGenerator extends Application {
         //! adjust padding
         // tilepane elements
         tilePane.setPadding(new Insets(10, 10, 10, 10));
+        tilePane.setHgap(tileHgap);
+        tilePane.setVgap(tileVgap);
         tilePane.setPrefSize(tileWidth, tileHeight);
+        tilePane.setMinSize(tileWidth, tileHeight);
+        //! mb bind max size to size of scrollPane
+        tilePane.setMaxSize(tileWidth, tileHeight);
+        // binds the whole tilePane to the width of scrollPane
         tilePane.prefWidthProperty().bind(root.widthProperty());
               
         Scene scene = new Scene(root, 800, 600);
@@ -192,7 +220,23 @@ public class ArtGenerator extends Application {
                 }
             }
         });
-        
+
+        // catch mouse event 
+        //! (get position in array) compare (OBJECTS !!!) clicked element with elements of the arraylist<shapes> to get the position inside of that 
+        //! (make it an obj with wrapperclass Integer)
+        //! (save position to arraylist<positions>)
+        //! (test if position was clicked before then remove it from arraylist<positions>)
+        // tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> System.out.println(e));
+        //! set listener tilepane to mark down which nodes are clicked by mouse
+        //! set REGION otherwise porogram just notices when clicked exactly on the shape
+        tilePane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(event);
+            };
+        });
+
+
     }
 
     public static void main(String[] args) {
@@ -208,7 +252,7 @@ public class ArtGenerator extends Application {
         ArrayList<Shape> shapeList = new ArrayList<>();
         ArrayList<Shape> mergedShapeList = new ArrayList<>();
        
-        
+         
         Random random = new Random();
         
         int randomRadius, 
@@ -248,6 +292,7 @@ public class ArtGenerator extends Application {
             Rectangle rectangle = new Rectangle(randomWidth, randomHeight, Color.BLACK);
             
             // shape operations
+            //! adjust algo cause sometimes shapes get completly cleared
             //! pick randomly circle or rectangle  
             //! its creating empty spaces that shouldnt exists!
             switch (randomShapeOperation) {
@@ -316,8 +361,7 @@ public class ArtGenerator extends Application {
         
         return mergedShapeList;
     }
-    
-    
+
     // mark selected with a black border
     public void markSelectedGraphics () {
         //! build mouse event that pick ups marked numbers and then show a border around them    
