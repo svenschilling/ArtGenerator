@@ -11,8 +11,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -23,8 +21,6 @@ import javafx.scene.shape.SVGPath;
 import javafx.geometry.Insets;
 
 // needed to save the image
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 import javafx.embed.swing.SwingFXUtils;
@@ -43,20 +39,29 @@ public class ArtGenerator extends Application {
     
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // primaryStage elements
         BorderPane root = new BorderPane();
         HBox hBox = new HBox();
         TilePane tilePane = new TilePane();
         TextField textField = new TextField();
         ScrollPane scrollPane = new ScrollPane(tilePane);
-        StackPane stackPane = new StackPane();
+        // nodeEditorStage
+        Stage nodeEditorStage = new Stage();
 
-        // vBox elements
+        // hBox elements primaryStage
         Button buttonGenerateAdd = new Button("generate add");
         Button buttonSaveImages = new Button("save images");
         Button buttonReset = new Button("clear fields");
         Button buttonDeleteSelected = new Button("delete selected");
         Button buttonGenerateNew = new Button("generate new");
         Button buttonNodeEditor = new Button("node editor");
+        // hBox elements nodeEditorStage
+        Button buttonBackToMain = new Button("to generator");
+
+        double minWidthWindow = 800;
+        double minHeightWindow = 600;
+        int tileWidth = 50;
+        int tileHeight = 50;
         
         hBox.getChildren().addAll(textField,buttonGenerateNew,buttonGenerateAdd,buttonSaveImages,buttonDeleteSelected,buttonReset,buttonNodeEditor);
             
@@ -104,9 +109,14 @@ public class ArtGenerator extends Application {
             @Override
             public void handle(ActionEvent actionEvent) {
                 int input;
-                // reset array and tilepane from shapes
-                makeShapes.clear();
-                tilePane.getChildren().clear();
+                /*
+                // only reset when its not empty array and tilepane from shapes
+                if(!makeShapes.isEmpty()) {
+                    makeShapes.clear();
+                    tilePane.getChildren().clear();
+                }
+                */
+                
                 try {
                     input = Integer.parseInt(textField.getText());    
                     makeShapes = createShape(input);
@@ -137,7 +147,6 @@ public class ArtGenerator extends Application {
             } 
         });
 
-
         //! work on node editor -> TODO.md
         buttonNodeEditor.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -150,25 +159,29 @@ public class ArtGenerator extends Application {
         //! show a little number in the upper top corner of each box
         //! adjust padding
         // tilepane elements
-        int tileWidth = 50;
-        int tileHeight = 50;
         tilePane.setPadding(new Insets(10, 10, 10, 10));
         tilePane.setPrefSize(tileWidth, tileHeight);
-        
-        // stage settings
-        primaryStage.setTitle("algorithm prototype");
+        tilePane.prefWidthProperty().bind(root.widthProperty());
               
         Scene scene = new Scene(root, 800, 600);
-        
-        //! put Region into scrollPane to specify region for tilepane
-        //! setup scrollpane that it format the images around the whole horizontal length
-        scrollPane.setPrefWidth(400);
-        System.out.println(scrollPane.widthProperty().getValue());
-    
+
+        // stage settings
+        primaryStage.setTitle("algorithm prototype");
+        // set min | max value for window size
+        primaryStage.minWidthProperty().setValue(minWidthWindow);
+        primaryStage.minHeightProperty().setValue(minHeightWindow);    
         primaryStage.getIcons().add(new Image(ArtGenerator.class.getResourceAsStream("paintbrush-icon.png")));
         primaryStage.setScene(scene);
         primaryStage.show();
         
+        // root elements     
+        root.setTop(hBox);
+        root.setCenter(scrollPane);
+        
+        // setup crollpane
+        // prevents hScrollBar 
+        scrollPane.setFitToWidth(true); 
+
         // key shortcuts
         //! set shortcut to generate button -> ENTER
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
@@ -179,12 +192,6 @@ public class ArtGenerator extends Application {
                 }
             }
         });
-        
-        // root elements     
-        root.setTop(hBox);
-        root.setCenter(scrollPane);
-        
-
         
     }
 
