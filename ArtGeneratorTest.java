@@ -34,19 +34,16 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import java.awt.image.BufferedImage;
 
 // shortcuts
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-
-
 public class ArtGeneratorTest extends Application {
 
     ArrayList<Shape> makeShapes;
-    
+        
     @Override
     public void start(Stage primaryStage) throws Exception {
         // node attributes
@@ -63,7 +60,7 @@ public class ArtGeneratorTest extends Application {
         TilePane tilePane = new TilePane();
         TextField textField = new TextField();
         ScrollPane scrollPane = new ScrollPane(tilePane);
-        //int statusBarWidth = root.get
+        
         // nodeEditorStage
         Stage nodeEditorStage = new Stage();
         StackPane nodeEditorStackPane = new StackPane();
@@ -156,10 +153,12 @@ public class ArtGeneratorTest extends Application {
             } 
         });
         
-        //! limit it to 300 images at first
+        // limited to save 300 images at once
         buttonSaveImages.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                //! mb build something that it always save it at the same format (x,y) 
+                //! or split them every 300 to a new image
                 //! when i save with too much (~300) images genereted it throws an save error -> maybe here lies the problem ?! -> mb build image with bufferedstream
                 WritableImage image = tilePane.snapshot(new SnapshotParameters(), null);
                           
@@ -169,7 +168,8 @@ public class ArtGeneratorTest extends Application {
                 File file = new File("art_template" + formattedDate + ".png");
                 
                 
-                if (makeShapes.size() < 301) {
+                if (makeShapes.size() < 300) {
+                    System.out.println("makeshape < 300");
                     try {
                         ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);    
                     } catch (Exception e) {
@@ -198,9 +198,6 @@ public class ArtGeneratorTest extends Application {
         tilePane.setHgap(tileHgap);
         tilePane.setVgap(tileVgap);
         tilePane.setPrefSize(tileWidth, tileHeight);
-
-        
-        
 
         // tilePane.setMinSize(tileWidth, tileHeight);
         //! mb bind max size to size of scrollPane
@@ -381,5 +378,11 @@ public class ArtGeneratorTest extends Application {
     // mark selected with a black border
     public void markSelectedGraphics () {
         //! build mouse event that pick ups marked numbers and then show a border around them    
+    }
+    protected ArrayList<Prefab> savePrefabList() {
+        ArrayList<Prefab> prefabConfigs = null;
+        
+
+        return prefabConfigs;
     }
 }
