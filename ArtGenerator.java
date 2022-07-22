@@ -10,12 +10,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
@@ -40,17 +42,18 @@ import javafx.scene.input.MouseEvent;
 
 public class ArtGenerator extends Application {
 
-    ArrayList<Shape> makeShapes;
+    ArrayList<Shape> makeShapes = null;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
         // node attributes
         double minWidthWindow = 800;
         double minHeightWindow = 600;
-        int tileWidth = 50;
-        int tileHeight = 50;
+        int tileWidth = 150;
+        int tileHeight = 150;
         int tileHgap = 5;
         int tileVgap = 5;
+        
 
         // primaryStage elements
         BorderPane root = new BorderPane();
@@ -58,14 +61,13 @@ public class ArtGenerator extends Application {
         TilePane tilePane = new TilePane();
         TextField textField = new TextField();
         ScrollPane scrollPane = new ScrollPane(tilePane);
-        Label statusLabel = new Label();
-
+        //int statusBarWidth = root.get
         // nodeEditorStage
         Stage nodeEditorStage = new Stage();
         StackPane nodeEditorStackPane = new StackPane();
         HBox nodeEditorHBox = new HBox();
-        //! set size to stackpane
         Canvas nodeEditorCanvas = new Canvas();
+        
 
         // hBox elements primaryStage
         Button buttonGenerateAdd = new Button("generate add");
@@ -76,6 +78,10 @@ public class ArtGenerator extends Application {
         Button buttonNodeEditor = new Button("node editor");
         // hBox elements nodeEditorStage
         Button buttonBackToMain = new Button("to generator");
+
+        
+        
+
 
         //! test setall to just overwrite old hbox
         nodeEditorHBox.getChildren().addAll(buttonBackToMain);
@@ -95,6 +101,7 @@ public class ArtGenerator extends Application {
             }
         });
 
+        //! can't clear field if there wasnt any generated images
         // button event -> delete all images
         buttonReset.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -130,19 +137,24 @@ public class ArtGenerator extends Application {
             public void handle(ActionEvent actionEvent) {
                 int input;
                 
-                
-                // if there is already shapes then fucking empty it 
-                // else create new shape 
-                if(tilePane.getChildren() == null) {
-                    System.out.println("no childs atm ..");
-                }
-
                 try {
-                    input = Integer.parseInt(textField.getText());    
-                    makeShapes = createShape(input);
-                    tilePane.getChildren().addAll(makeShapes);         
-
-                } catch (Exception e) {
+                    //! wrok fine after add or reset but brakes also when zero input is there
+                    if (makeShapes.isEmpty()) {
+                        System.out.println("empty");
+                        input = Integer.parseInt(textField.getText());    
+                        makeShapes = createShape(input);
+                        tilePane.getChildren().addAll(makeShapes);    
+                    } else {
+                        // if there was already shapes
+                        System.out.println("making shapes");
+                        makeShapes.clear();
+                        tilePane.getChildren().clear();
+                        input = Integer.parseInt(textField.getText());    
+                        // creates shapes
+                        makeShapes = createShape(input);
+                        tilePane.getChildren().addAll(makeShapes); 
+                    }
+                } catch (NullPointerException e) {
                     e.getStackTrace();
                 }
             } 
@@ -185,9 +197,9 @@ public class ArtGenerator extends Application {
         tilePane.setHgap(tileHgap);
         tilePane.setVgap(tileVgap);
         tilePane.setPrefSize(tileWidth, tileHeight);
-        tilePane.setMinSize(tileWidth, tileHeight);
-        //! mb bind max size to size of scrollPane
-        tilePane.setMaxSize(tileWidth, tileHeight);
+        // tilePane.setMinSize(tileWidth, tileHeight);
+        // //! mb bind max size to size of scrollPane
+        // tilePane.setMaxSize(tileWidth, tileHeight);
         // binds the whole tilePane to the width of scrollPane
         tilePane.prefWidthProperty().bind(root.widthProperty());
               
@@ -251,8 +263,7 @@ public class ArtGenerator extends Application {
     public ArrayList<Shape> createShape(int numberOfShapes) {
         ArrayList<Shape> shapeList = new ArrayList<>();
         ArrayList<Shape> mergedShapeList = new ArrayList<>();
-       
-         
+           
         Random random = new Random();
         
         int randomRadius, 
@@ -299,24 +310,24 @@ public class ArtGenerator extends Application {
                 case 3:
                     Shape substractShape = Shape.subtract(circle, rectangle);
                     substractShape.setRotate(randomRotation);
-                    substractShape.setScaleX(randomScaleX = random.nextDouble());
-                    substractShape.setScaleY(randomScaleY = random.nextDouble());
+                    // substractShape.setScaleX(randomScaleX = random.nextDouble());
+                    // substractShape.setScaleY(randomScaleY = random.nextDouble());
                     
                     shapeList.add(substractShape);
                     break;
                 case 2:
                     Shape unionShape = Shape.union(circle, rectangle);
                     unionShape.setRotate(randomRotation);
-                    unionShape.setScaleX(randomScaleX = random.nextDouble());
-                    unionShape.setScaleY(randomScaleY = random.nextDouble());
+                    // unionShape.setScaleX(randomScaleX = random.nextDouble());
+                    // unionShape.setScaleY(randomScaleY = random.nextDouble());
 
                     shapeList.add(unionShape);
                     break;
                 case 1:
                     Shape intersectShape = Shape.intersect(circle, rectangle);
                     intersectShape.setRotate(randomRotation);
-                    intersectShape.setScaleX(randomScaleX = random.nextDouble());
-                    intersectShape.setScaleY(randomScaleY = random.nextDouble());
+                    // intersectShape.setScaleX(randomScaleX = random.nextDouble());
+                    // intersectShape.setScaleY(randomScaleY = random.nextDouble());
         
                     shapeList.add(intersectShape);
                     break;   
