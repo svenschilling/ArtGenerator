@@ -1,0 +1,1 @@
++ shape transformable to just outline with different effects (dotted ..)
