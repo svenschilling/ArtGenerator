@@ -45,8 +45,7 @@ public class ArtGeneratorTest extends Application {
         // node attributes
         double minWidthWindow = 800;
         double minHeightWindow = 600;
-        int tileWidth = 200;
-        int tileHeight = 200;
+        double prefTileSize = 200;
         int tileHgap = 5;
         int tileVgap = 5;
         
@@ -197,17 +196,15 @@ public class ArtGeneratorTest extends Application {
         tilePane.setHgap(tileHgap);
         tilePane.setVgap(tileVgap);
         
-        //! size isnt always the same | when setting min and max size then children are shown vertical (scrollpane also isnt working then)
-        // set fixed size 
-        tilePane.setPrefSize(tileWidth, tileHeight);
-        // tilePane.setMinSize(tileWidth, tileHeight);
-        // tilePane.setMaxSize(tileWidth, tileHeight);
+        // set fixed size  
+        tilePane.prefTileHeightProperty().setValue(prefTileSize);
+        tilePane.prefTileWidthProperty().setValue(prefTileSize);
 
         // binds the whole tilePane to the width of scrollPane
         tilePane.prefWidthProperty().bind(root.widthProperty());
         tilePane.prefHeightProperty().bind(root.heightProperty());
               
-        Scene scene = new Scene(root, 820, 620);
+        Scene scene = new Scene(root, 860, 660);
 
         // stage settings
         primaryStage.setTitle("algorithm prototype");
