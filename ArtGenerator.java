@@ -133,14 +133,12 @@ public class ArtGenerator extends Application {
                 int input;           
                 
                 // when its empty
-                System.out.println("empty");
                 input = Integer.parseInt(textField.getText());    
                 makeShapes = createShape(input);
                 tilePane.getChildren().addAll(makeShapes);    
                 // when shapes was already
                 if (!makeShapes.isEmpty()) {
                     // if there was already shapes
-                    System.out.println("making shapes");
                     makeShapes.clear();
                     tilePane.getChildren().clear();
                     input = Integer.parseInt(textField.getText());    
@@ -164,8 +162,7 @@ public class ArtGenerator extends Application {
                 DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formattedDate = localDateTime.format(myFormatObj);
                 File file = new File("art_template" + formattedDate + ".png");
-                
-                
+                         
                 if (makeShapes.size() < 300) {
                     System.out.println("makeshape < 300");
                     try {
@@ -222,8 +219,7 @@ public class ArtGenerator extends Application {
         root.setTop(hBox);
         root.setCenter(scrollPane);
         
-        // setup crollpane
-        // prevents hScrollBar 
+        // needed to prevent size mismatching
         scrollPane.setFitToWidth(true); 
 
         // key shortcuts

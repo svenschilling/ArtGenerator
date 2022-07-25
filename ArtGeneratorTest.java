@@ -206,6 +206,7 @@ public class ArtGeneratorTest extends Application {
               
         Scene scene = new Scene(root, 860, 660);
 
+
         // stage settings
         primaryStage.setTitle("algorithm prototype");
         // set min | max value for window size
@@ -213,6 +214,7 @@ public class ArtGeneratorTest extends Application {
         primaryStage.minHeightProperty().setValue(minHeightWindow);    
         primaryStage.getIcons().add(new Image(ArtGenerator.class.getResourceAsStream("paintbrush-icon.png")));
         primaryStage.setScene(scene);
+        
         primaryStage.show();
         
         // root elements     
@@ -293,7 +295,7 @@ public class ArtGeneratorTest extends Application {
             randomRadius = random_int(20, 90);
             randomRotation = random_int(0, 180);
             
-            //! ho deeper into configuration of shapes + make use of other like bezier curve
+            //! go deeper into configuration of shapes + make use of other like bezier curve
             // triangle
             SVGPath triangle = new SVGPath();      
             //! make these creation numbers also random 
