@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
@@ -44,8 +45,8 @@ public class ArtGeneratorTest extends Application {
         // node attributes
         double minWidthWindow = 800;
         double minHeightWindow = 600;
-        int tileWidth = 150;
-        int tileHeight = 150;
+        int tileWidth = 200;
+        int tileHeight = 200;
         int tileHgap = 5;
         int tileVgap = 5;
         
@@ -59,6 +60,7 @@ public class ArtGeneratorTest extends Application {
         // nodeEditorStage
         Stage nodeEditorStage = new Stage();
         StackPane nodeEditorStackPane = new StackPane();
+        GridPane nodeEditoGridPane = new GridPane();
         HBox nodeEditorHBox = new HBox();
         Canvas nodeEditorCanvas = new Canvas();  
 
@@ -124,6 +126,7 @@ public class ArtGeneratorTest extends Application {
             } 
         });
 
+        // button event -> generate new set of shapes
         buttonGenerateNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -178,6 +181,7 @@ public class ArtGeneratorTest extends Application {
         });
 
         //! work on node editor -> TODO.md
+        // button event -> swithc to node editor
         buttonNodeEditor.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -187,20 +191,23 @@ public class ArtGeneratorTest extends Application {
         });
         
         //! show a little number in the upper top corner of each box
-        //! size isnt always the same
+        
         // tilepane elements
         tilePane.setPadding(new Insets(10, 10, 10, 10));
         tilePane.setHgap(tileHgap);
         tilePane.setVgap(tileVgap);
+        
+        //! size isnt always the same | when setting min and max size then children are shown vertical (scrollpane also isnt working then)
+        // set fixed size 
         tilePane.setPrefSize(tileWidth, tileHeight);
-
         // tilePane.setMinSize(tileWidth, tileHeight);
-        //! mb bind max size to size of scrollPane
         // tilePane.setMaxSize(tileWidth, tileHeight);
+
         // binds the whole tilePane to the width of scrollPane
         tilePane.prefWidthProperty().bind(root.widthProperty());
+        tilePane.prefHeightProperty().bind(root.heightProperty());
               
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 820, 620);
 
         // stage settings
         primaryStage.setTitle("algorithm prototype");
@@ -374,10 +381,16 @@ public class ArtGeneratorTest extends Application {
     public void markSelectedGraphics () {
         //! build mouse event that pick ups marked numbers and then show a border around them    
     }
+
     protected ArrayList<Prefab> savePrefabList() {
+
         ArrayList<Prefab> prefabConfigs = null;
         
 
         return prefabConfigs;
     }
+
+
+    
+    
 }

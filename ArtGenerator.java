@@ -7,17 +7,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.FillRule;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
@@ -38,36 +36,33 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
-
-
 public class ArtGenerator extends Application {
 
-    ArrayList<Shape> makeShapes = null;
-    
+    ArrayList<Shape> makeShapes;
+        
     @Override
     public void start(Stage primaryStage) throws Exception {
         // node attributes
         double minWidthWindow = 800;
         double minHeightWindow = 600;
-        int tileWidth = 150;
-        int tileHeight = 150;
+        int tileWidth = 200;
+        int tileHeight = 200;
         int tileHgap = 5;
         int tileVgap = 5;
         
-
         // primaryStage elements
         BorderPane root = new BorderPane();
         HBox hBox = new HBox();
         TilePane tilePane = new TilePane();
         TextField textField = new TextField();
         ScrollPane scrollPane = new ScrollPane(tilePane);
-        //int statusBarWidth = root.get
+        
         // nodeEditorStage
         Stage nodeEditorStage = new Stage();
         StackPane nodeEditorStackPane = new StackPane();
+        GridPane nodeEditoGridPane = new GridPane();
         HBox nodeEditorHBox = new HBox();
-        Canvas nodeEditorCanvas = new Canvas();
-        
+        Canvas nodeEditorCanvas = new Canvas();  
 
         // hBox elements primaryStage
         Button buttonGenerateAdd = new Button("generate add");
@@ -79,13 +74,9 @@ public class ArtGenerator extends Application {
         // hBox elements nodeEditorStage
         Button buttonBackToMain = new Button("to generator");
 
-        
-        
-
-
         //! test setall to just overwrite old hbox
         nodeEditorHBox.getChildren().addAll(buttonBackToMain);
-
+        //! build loadingbar cause sometimes it takes longer and user should know something is working
         //! build a little status bar (ex. label) that show infos like file_xy got saved or you exceeded images creation (beyond 300) 
         //! make it green plus success text (like saved image namedxy at c:/ ..) or red with error message
 
@@ -101,15 +92,19 @@ public class ArtGenerator extends Application {
             }
         });
 
-        //! can't clear field if there wasnt any generated images
         // button event -> delete all images
         buttonReset.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 try {
-                    makeShapes.clear();
-                    tilePane.getChildren().clear();
                     textField.setText("");
+                    try {
+                        makeShapes.clear();
+                        tilePane.getChildren().clear();
+                        
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }
                 } catch (Exception e) {
                     e.getStackTrace();
                 }
@@ -131,57 +126,62 @@ public class ArtGenerator extends Application {
             } 
         });
 
-        //! doesnt work when nothing was generated before 
+        // button event -> generate new set of shapes
         buttonGenerateNew.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                int input;
+                int input;           
                 
-                try {
-                    //! wrok fine after add or reset but brakes also when zero input is there
-                    if (makeShapes.isEmpty()) {
-                        System.out.println("empty");
-                        input = Integer.parseInt(textField.getText());    
-                        makeShapes = createShape(input);
-                        tilePane.getChildren().addAll(makeShapes);    
-                    } else {
-                        // if there was already shapes
-                        System.out.println("making shapes");
-                        makeShapes.clear();
-                        tilePane.getChildren().clear();
-                        input = Integer.parseInt(textField.getText());    
-                        // creates shapes
-                        makeShapes = createShape(input);
-                        tilePane.getChildren().addAll(makeShapes); 
-                    }
-                } catch (NullPointerException e) {
-                    e.getStackTrace();
-                }
+                // when its empty
+                System.out.println("empty");
+                input = Integer.parseInt(textField.getText());    
+                makeShapes = createShape(input);
+                tilePane.getChildren().addAll(makeShapes);    
+                // when shapes was already
+                if (!makeShapes.isEmpty()) {
+                    // if there was already shapes
+                    System.out.println("making shapes");
+                    makeShapes.clear();
+                    tilePane.getChildren().clear();
+                    input = Integer.parseInt(textField.getText());    
+                    // creates shapes
+                    makeShapes = createShape(input);
+                    tilePane.getChildren().addAll(makeShapes);      
+                }     
             } 
         });
         
-        //! when i save with too much (~300) images genereted it throws an save error
+        // limited to save 300 images at once
         buttonSaveImages.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                //! maybe here lies the problem ?!
+                //! mb build something that it always save it at the same format (x,y) 
+                //! or split them every 300 to a new image
+                //! when i save with too much (~300) images genereted it throws an save error -> maybe here lies the problem ?! -> mb build image with bufferedstream
                 WritableImage image = tilePane.snapshot(new SnapshotParameters(), null);
-                
+                          
                 LocalDateTime localDateTime = LocalDateTime.now();
                 DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formattedDate = localDateTime.format(myFormatObj);
-                
                 File file = new File("art_template" + formattedDate + ".png");
-                                
-                try {
-                    ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);    
-                } catch (Exception e) {
-                    e.getStackTrace();
-                }      
+                
+                
+                if (makeShapes.size() < 300) {
+                    System.out.println("makeshape < 300");
+                    try {
+                        ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);    
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }      
+                    
+                } else {
+                    System.out.println("cant save images cause it exceed the limit of 300.");
+                }                   
             } 
         });
 
         //! work on node editor -> TODO.md
+        // button event -> swithc to node editor
         buttonNodeEditor.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -191,19 +191,23 @@ public class ArtGenerator extends Application {
         });
         
         //! show a little number in the upper top corner of each box
-        //! adjust padding
+        
         // tilepane elements
         tilePane.setPadding(new Insets(10, 10, 10, 10));
         tilePane.setHgap(tileHgap);
         tilePane.setVgap(tileVgap);
+        
+        //! size isnt always the same | when setting min and max size then children are shown vertical (scrollpane also isnt working then)
+        // set fixed size 
         tilePane.setPrefSize(tileWidth, tileHeight);
         // tilePane.setMinSize(tileWidth, tileHeight);
-        // //! mb bind max size to size of scrollPane
         // tilePane.setMaxSize(tileWidth, tileHeight);
+
         // binds the whole tilePane to the width of scrollPane
         tilePane.prefWidthProperty().bind(root.widthProperty());
+        tilePane.prefHeightProperty().bind(root.heightProperty());
               
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 820, 620);
 
         // stage settings
         primaryStage.setTitle("algorithm prototype");
@@ -377,4 +381,16 @@ public class ArtGenerator extends Application {
     public void markSelectedGraphics () {
         //! build mouse event that pick ups marked numbers and then show a border around them    
     }
+
+    protected ArrayList<Prefab> savePrefabList() {
+
+        ArrayList<Prefab> prefabConfigs = null;
+        
+
+        return prefabConfigs;
+    }
+
+
+    
+    
 }
