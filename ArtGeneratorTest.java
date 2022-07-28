@@ -1,3 +1,5 @@
+import processing.awt.*;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -5,10 +7,12 @@ import java.util.Random;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -39,7 +43,10 @@ import javafx.scene.input.MouseEvent;
 public class ArtGeneratorTest extends Application {
 
     ArrayList<Shape> makeShapes;
-        
+    
+    //! build a dropdown menu where the user can switch between shape generation algorithm 
+    //! (ex. creating shape from premade svg images loaded from a directory || or the own standart || mb some others like AI)
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         // node attributes
@@ -80,7 +87,9 @@ public class ArtGeneratorTest extends Application {
         //! make it green plus success text (like saved image namedxy at c:/ ..) or red with error message
 
         hBox.getChildren().addAll(textField,buttonGenerateNew,buttonGenerateAdd,buttonSaveImages,buttonDeleteSelected,buttonReset,buttonNodeEditor);
-            
+
+        
+
         //! build implementation of deleteSelected buttons
         // button event -> delete selected graphics
         buttonDeleteSelected.setOnAction(new EventHandler<ActionEvent>() {
@@ -132,14 +141,12 @@ public class ArtGeneratorTest extends Application {
                 int input;           
                 
                 // when its empty
-                System.out.println("empty");
                 input = Integer.parseInt(textField.getText());    
                 makeShapes = createShape(input);
                 tilePane.getChildren().addAll(makeShapes);    
                 // when shapes was already
                 if (!makeShapes.isEmpty()) {
                     // if there was already shapes
-                    System.out.println("making shapes");
                     makeShapes.clear();
                     tilePane.getChildren().clear();
                     input = Integer.parseInt(textField.getText());    
@@ -180,7 +187,7 @@ public class ArtGeneratorTest extends Application {
         });
 
         //! work on node editor -> TODO.md
-        // button event -> swithc to node editor
+        // button event -> switch to node editor
         buttonNodeEditor.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -222,11 +229,13 @@ public class ArtGeneratorTest extends Application {
         root.setCenter(scrollPane);
         
         // setup crollpane
-        // prevents hScrollBar 
         scrollPane.setFitToWidth(true); 
+        //! as needed still show the scrollbar no matter the size of the window
+        scrollPane.setVbarPolicy(ScrollBarPolicy.AS_NEEDED); 
+        scrollPane.setHbarPolicy(ScrollBarPolicy.NEVER);
 
         // key shortcuts
-        //! set shortcut to generate button -> ENTER
+        //! set shortcut to generate button -> ENTER MAKE IT alt + 1-6
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             public void handle(KeyEvent ke) {
                 if (ke.getCode() == KeyCode.ENTER) {
@@ -248,12 +257,14 @@ public class ArtGeneratorTest extends Application {
             @Override
             public void handle(MouseEvent event) {
                 System.out.println(event);
+                Node node = (Node)event.getSource();
+                
+                System.out.println("id: " + node.getId());
             };
         });
-
-
     }
 
+  
     public static void main(String[] args) {
         launch(args);
     }
@@ -354,16 +365,16 @@ public class ArtGeneratorTest extends Application {
                     case 2:
                         Shape unionShape = Shape.union(shapeList.get(counter), shapeList.get(counter+1));
                         unionShape.setRotate(randomRotation);
-                        //unionShape.setScaleX(randomScaleX = random.nextDouble());
-                        //unionShape.setScaleY(randomScaleY = random.nextDouble());
+                        // unionShape.setScaleX(randomScaleX = random.nextDouble());
+                        // unionShape.setScaleY(randomScaleY = random.nextDouble());
 
                         mergedShapeList.add(unionShape);
                         break;
                     case 1:
                         Shape intersectShape = Shape.intersect(shapeList.get(counter), shapeList.get(counter+1));
                         intersectShape.setRotate(randomRotation);
-                        //intersectShape.setScaleX(randomScaleX = random.nextDouble());
-                        //intersectShape.setScaleY(randomScaleY = random.nextDouble());
+                        // intersectShape.setScaleX(randomScaleX = random.nextDouble());
+                        // intersectShape.setScaleY(randomScaleY = random.nextDouble());
             
                         mergedShapeList.add(intersectShape);
                         break;           

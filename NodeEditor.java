@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 import javafx.application.Application;
 import javafx.event.EventType;
 import javafx.scene.Scene;
@@ -30,6 +32,9 @@ public class NodeEditor extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
         Color white = new Color(0, 0, 0, 0.5);
         
+        // hashmap to save nodes
+        HashMap<Integer, String> prefabHashmap = new HashMap<>();
+
         // coordinates
         int x,y;
         int mouseX,mouseY;
@@ -45,7 +50,7 @@ public class NodeEditor extends Application {
         gc.setFill(white);
 
 
-        MouseEvent mouseEvent = new MouseEvent(EventType.ROOT, x, y, null, null, MouseButton.PRIMARY, 1, null, null, null, null, true, null, null, null, null, null, pickResult);
+        //MouseEvent mouseEvent = new MouseEvent(EventType.ROOT, x, y, null, null, MouseButton.PRIMARY, 1, null, null, null, null, true, null, null, null, null, null, 1);
     }
     public static void main(String[] args) {
         launch(args);

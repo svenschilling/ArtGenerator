@@ -49,6 +49,7 @@ https://docs.oracle.com/javafx/2/canvas/jfxpub-canvas.htm
 https://stackoverflow.com/questions/21973777/easiest-way-to-read-in-svg-path-data-with-java !
 https://github.com/karldd/Alchemy/blob/master/src/org/alchemy/create/PullShapes.java !
 https://stackoverflow.com/questions/38994519/responsive-ui-design-with-a-tilepane-in-a-scrollpane !
+https://processing.github.io/processing-javadocs/core/ !
 
 https://mavenlibs.com/jar/file/org.apache.xmlgraphics/batik-svggen
 
@@ -60,3 +61,6 @@ https://stackoverflow.com/questions/33961606/javafx-how-to-drag-object-along-giv
 useful libs:
 https://xmlgraphics.apache.org/batik/using/
 https://www.jfree.org/jfreesvg/javadoc/org.jfree.svg/org/jfree/svg/package-summary.html
+http://phi.lho.free.fr/programming/Processing/P8gGraphicsSVG/ !
+https://processing.org/reference/libraries/ !
+https://www.youtube.com/watch?v=sOGUweK8cUI !
