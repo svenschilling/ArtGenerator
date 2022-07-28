@@ -1,52 +1,39 @@
-import processing.awt.*;
 
+import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Random;
+
+import javax.imageio.ImageIO;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.stage.Stage;
-import javafx.scene.shape.SVGPath;
-import javafx.geometry.Insets;
+import javafx.util.converter.LocalDateStringConverter;
 
-// needed to save the image
-import java.io.File;
-import javax.imageio.ImageIO;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-
-// shortcuts
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-
-public class ArtGeneratorTest extends Application {
-
+public class View extends Application{
     ArrayList<Shape> makeShapes;
     
-    //! build a dropdown menu where the user can switch between shape generation algorithm 
-    //! (ex. creating shape from premade svg images loaded from a directory || or the own standart || mb some others like AI)
-
     @Override
     public void start(Stage primaryStage) throws Exception {
         // node attributes
@@ -165,7 +152,7 @@ public class ArtGeneratorTest extends Application {
                 //! or split them every 300 to a new image
                 //! when i save with too much (~300) images genereted it throws an save error -> maybe here lies the problem ?! -> mb build image with bufferedstream
                 WritableImage image = tilePane.snapshot(new SnapshotParameters(), null);
-                          
+                        
                 LocalDateTime localDateTime = LocalDateTime.now();
                 DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
                 String formattedDate = localDateTime.format(myFormatObj);
@@ -210,7 +197,7 @@ public class ArtGeneratorTest extends Application {
         // binds the whole tilePane to the width of scrollPane
         tilePane.prefWidthProperty().bind(root.widthProperty());
         tilePane.prefHeightProperty().bind(root.heightProperty());
-              
+            
         Scene scene = new Scene(root, 860, 660);
 
 
@@ -258,143 +245,9 @@ public class ArtGeneratorTest extends Application {
             public void handle(MouseEvent event) {
                 System.out.println(event);
                 Node node = (Node)event.getSource();
-                
+                 
                 System.out.println("id: " + node.getId());
             }
         });
-    }
-
-  
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
-    public static int random_int(int Min, int Max)
-    {
-         return (int) (Math.random()*(Max-Min))+Min;
-    }
-    
-    public ArrayList<Shape> createShape(int numberOfShapes) {
-        ArrayList<Shape> shapeList = new ArrayList<>();
-        ArrayList<Shape> mergedShapeList = new ArrayList<>();
-           
-        Random random = new Random();
-        
-        int randomRadius, 
-            randomWidth,  
-            randomHeight, 
-            randomShapeOperation,
-            randomMergedShapeOperation,
-            randomRotation,
-            randomShape1,
-            randomShape2;
-
-        double randomScaleX,
-               randomScaleY; 
-        
-        int condition = 0;
-        int iterations = 10;
-        int counter = 0;
-
-        // needs times of iterations the amount of shapes
-        for (int i = 0; i < numberOfShapes * iterations; i++) {
-            randomShapeOperation = random_int(1, 4);
-            randomShape1 = random_int(1, 4);
-            randomShape2 = random_int(1, 4);
-            randomWidth = random_int(20, 60);
-            randomHeight = random_int(20, 70);
-            randomRadius = random_int(20, 90);
-            randomRotation = random_int(0, 180);
-            
-            //! go deeper into configuration of shapes + make use of other like bezier curve
-            // triangle
-            SVGPath triangle = new SVGPath();      
-            //! make these creation numbers also random 
-            String path = "M 100 100 L 300 100 L 200 300 z";  
-            triangle.setContent(path);  
-            
-            Circle circle = new Circle(randomRadius, Color.BLACK);
-            Rectangle rectangle = new Rectangle(randomWidth, randomHeight, Color.BLACK);
-            
-            // shape operations
-            //! adjust algo cause sometimes shapes get completly cleared
-            //! pick randomly circle or rectangle  
-            //! its creating empty spaces that shouldnt exists!
-            switch (randomShapeOperation) {
-                case 3:
-                    Shape substractShape = Shape.subtract(circle, rectangle);
-                    substractShape.setRotate(randomRotation);
-                    // substractShape.setScaleX(randomScaleX = random.nextDouble());
-                    // substractShape.setScaleY(randomScaleY = random.nextDouble());
-                    
-                    shapeList.add(substractShape);
-                    break;
-                case 2:
-                    Shape unionShape = Shape.union(circle, rectangle);
-                    unionShape.setRotate(randomRotation);
-                    // unionShape.setScaleX(randomScaleX = random.nextDouble());
-                    // unionShape.setScaleY(randomScaleY = random.nextDouble());
-
-                    shapeList.add(unionShape);
-                    break;
-                case 1:
-                    Shape intersectShape = Shape.intersect(circle, rectangle);
-                    intersectShape.setRotate(randomRotation);
-                    // intersectShape.setScaleX(randomScaleX = random.nextDouble());
-                    // intersectShape.setScaleY(randomScaleY = random.nextDouble());
-        
-                    shapeList.add(intersectShape);
-                    break;   
-            }
-        }
-        
-        for (int i = 0; i < numberOfShapes; i++) {      
-            do { 
-                randomShapeOperation = random_int(1, 4);
-                randomRotation = random_int(0, 360);
-
-                switch (randomShapeOperation) {
-                    case 3:
-                        Shape substractShape = Shape.subtract(shapeList.get(counter), shapeList.get(counter+1));
-                        substractShape.setRotate(randomRotation);
-                        // substractShape.setScaleX(randomScaleX = random.nextDouble());
-                        // substractShape.setScaleY(randomScaleY = random.nextDouble());
-
-                        mergedShapeList.add(substractShape);
-                        break;
-                    case 2:
-                        Shape unionShape = Shape.union(shapeList.get(counter), shapeList.get(counter+1));
-                        unionShape.setRotate(randomRotation);
-                        // unionShape.setScaleX(randomScaleX = random.nextDouble());
-                        // unionShape.setScaleY(randomScaleY = random.nextDouble());
-
-                        mergedShapeList.add(unionShape);
-                        break;
-                    case 1:
-                        Shape intersectShape = Shape.intersect(shapeList.get(counter), shapeList.get(counter+1));
-                        intersectShape.setRotate(randomRotation);
-                        // intersectShape.setScaleX(randomScaleX = random.nextDouble());
-                        // intersectShape.setScaleY(randomScaleY = random.nextDouble());
-            
-                        mergedShapeList.add(intersectShape);
-                        break;           
-                }
-                condition++; 
-                counter++;
-            } while (condition == iterations * numberOfShapes);
-        }
-        
-        return mergedShapeList;
-    }
-
-    // mark selected with a black border
-    public void markSelectedGraphics () {
-        //! build mouse event that pick ups marked numbers and then show a border around them    
-    }
-
-
-
-
-    
-    
-}
+   }
+} 
