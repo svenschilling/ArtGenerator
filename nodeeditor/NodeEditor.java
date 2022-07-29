@@ -1,3 +1,4 @@
+package nodeeditor;
 import java.util.HashMap;
 
 import javafx.application.Application;
