@@ -1,5 +1,6 @@
 {
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "/usr/lib/jvm/java-19-openjdk/lib/**/*.jar",
     ]
-}
