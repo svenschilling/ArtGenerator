@@ -65,17 +65,10 @@ public class Controller extends ArtGeneratorTest {
                 tilePane.getChildren().addAll(makeShapes);
                 // when shapes was already
                 if (!makeShapes.isEmpty()) {
-                    // if there was already shapes
-                    makeShapes.clear();
-                    tilePane.getChildren().clear();
-                    input = Integer.parseInt(textField.getText());
-                    // creates shapes
-                    makeShapes = createShape(input);
-                    tilePane.getChildren().addAll(makeShapes);
+                    // if there was already shapes 
                 }
             }
         });
-
         // limited to save 300 images at once
         buttonSaveImages.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -147,6 +140,5 @@ public class Controller extends ArtGeneratorTest {
                 System.out.println("id: " + node.getId());
             }
         });
-
     }
 }
